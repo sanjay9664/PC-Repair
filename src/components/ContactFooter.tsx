@@ -1,14 +1,18 @@
 import Link from "next/link";
 import { BUSINESS_INFO } from "@/data/services";
-import { buildMailtoUrl, buildWhatsAppUrl } from "@/utils/inquiry";
+import {
+  buildMailtoUrl,
+  buildWhatsAppUrl,
+  formatProfessionalGeneralEmailBody,
+} from "@/utils/inquiry";
 
 export default function ContactFooter() {
   const whatsappUrl = buildWhatsAppUrl(
     `Hello ${BUSINESS_INFO.brandName}, I need laptop/desktop repair help.`
   );
   const mailtoUrl = buildMailtoUrl(
-    "Doorstep Repair Inquiry",
-    `Hello ${BUSINESS_INFO.brandName},\n\nI would like to inquire about a doorstep repair visit.\nArea:\nDevice & Issue:\nPhone:`
+    "Doorstep Laptop / PC Service Inquiry",
+    formatProfessionalGeneralEmailBody()
   );
 
   return (
@@ -29,7 +33,7 @@ export default function ContactFooter() {
 
           <div className="d-flex flex-wrap justify-content-center gap-3 mb-3">
             <a
-              href={`tel:${BUSINESS_INFO.primaryPhone}`}
+              href={`tel:${BUSINESS_INFO.primaryPhoneTel}`}
               className="btn btn-light text-primary fw-bold rounded-3 px-4 py-2 d-inline-flex align-items-center gap-2"
             >
               <i className="bi bi-telephone-fill"></i>
@@ -51,7 +55,7 @@ export default function ContactFooter() {
               className="btn btn-am-whatsapp px-4 py-2 d-inline-flex align-items-center gap-2"
             >
               <i className="bi bi-whatsapp"></i>
-              <span>WhatsApp Now</span>
+              <span>WhatsApp ({BUSINESS_INFO.primaryPhone})</span>
             </a>
 
             <a
@@ -59,8 +63,11 @@ export default function ContactFooter() {
               className="btn btn-outline-light fw-bold rounded-3 px-4 py-2 d-inline-flex align-items-center gap-2"
             >
               <i className="bi bi-envelope-fill"></i>
-              <span>{BUSINESS_INFO.email}</span>
+              <span>Email Query (Both)</span>
             </a>
+          </div>
+          <div className="small text-white-50">
+            Emails: {BUSINESS_INFO.email} &amp; {BUSINESS_INFO.secondaryEmail}
           </div>
         </div>
       </section>
@@ -144,7 +151,7 @@ export default function ContactFooter() {
                 <li>
                   <i className="bi bi-telephone text-primary me-2"></i>
                   <a
-                    href={`tel:${BUSINESS_INFO.primaryPhone}`}
+                    href={`tel:${BUSINESS_INFO.primaryPhoneTel}`}
                     className="text-decoration-none text-light"
                   >
                     {BUSINESS_INFO.primaryPhone}
@@ -160,10 +167,27 @@ export default function ContactFooter() {
                 <li>
                   <i className="bi bi-envelope text-primary me-2"></i>
                   <a
-                    href={`mailto:${BUSINESS_INFO.email}`}
+                    href={buildMailtoUrl(
+                      "Doorstep Laptop / PC Service Inquiry",
+                      formatProfessionalGeneralEmailBody(),
+                      BUSINESS_INFO.email
+                    )}
                     className="text-decoration-none text-light"
                   >
                     {BUSINESS_INFO.email}
+                  </a>
+                </li>
+                <li>
+                  <i className="bi bi-envelope text-primary me-2"></i>
+                  <a
+                    href={buildMailtoUrl(
+                      "Doorstep Laptop / PC Service Inquiry",
+                      formatProfessionalGeneralEmailBody(),
+                      BUSINESS_INFO.secondaryEmail
+                    )}
+                    className="text-decoration-none text-light"
+                  >
+                    {BUSINESS_INFO.secondaryEmail}
                   </a>
                 </li>
                 <li>
@@ -198,7 +222,7 @@ export default function ContactFooter() {
           <i className="bi bi-whatsapp"></i>
         </a>
         <a
-          href={`tel:${BUSINESS_INFO.primaryPhone}`}
+          href={`tel:${BUSINESS_INFO.primaryPhoneTel}`}
           className="am-float-btn am-float-call"
           title={`Call ${BUSINESS_INFO.primaryPhone}`}
           aria-label={`Call ${BUSINESS_INFO.primaryPhone}`}

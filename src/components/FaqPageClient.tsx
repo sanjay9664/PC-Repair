@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { BUSINESS_INFO, FAQ_ITEMS, FaqItem } from "@/data/services";
-import { buildMailtoUrl, buildWhatsAppUrl } from "@/utils/inquiry";
+import {
+  buildMailtoUrl,
+  buildWhatsAppUrl,
+  formatProfessionalGeneralEmailBody,
+} from "@/utils/inquiry";
 
 type CategoryFilter = "All" | FaqItem["category"];
 
@@ -100,7 +104,7 @@ export default function FaqPageClient() {
                   <i className="bi bi-whatsapp me-2"></i>Chat on WhatsApp
                 </a>
                 <a
-                  href={`tel:${BUSINESS_INFO.primaryPhone}`}
+                  href={`tel:${BUSINESS_INFO.primaryPhoneTel}`}
                   className="btn btn-am-outline"
                 >
                   <i className="bi bi-telephone me-2"></i>Call{" "}
@@ -108,13 +112,19 @@ export default function FaqPageClient() {
                 </a>
                 <a
                   href={buildMailtoUrl(
-                    "Question regarding doorstep computer service",
-                    `Hello ${BUSINESS_INFO.brandName},\n\nMy question:`
+                    "Doorstep Service Question",
+                    formatProfessionalGeneralEmailBody("General / FAQ Inquiry")
                   )}
                   className="btn btn-am-primary"
                 >
-                  <i className="bi bi-envelope me-2"></i>Send Email
+                  <i className="bi bi-envelope me-2"></i>Send Email (Both)
                 </a>
+              </div>
+
+              <div className="small text-secondary mb-3">
+                <div className="fw-semibold text-dark mb-1">Email IDs:</div>
+                <div className="text-truncate">{BUSINESS_INFO.email}</div>
+                <div className="text-truncate">{BUSINESS_INFO.secondaryEmail}</div>
               </div>
 
               <div className="pt-3 border-top small text-secondary">

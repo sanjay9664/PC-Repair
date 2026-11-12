@@ -87,7 +87,7 @@ export default function Navbar() {
 
             <div className="d-flex flex-wrap gap-2">
               <a
-                href={`tel:${BUSINESS_INFO.primaryPhone}`}
+                href={`tel:${BUSINESS_INFO.primaryPhoneTel}`}
                 className="btn btn-am-outline btn-sm px-3 py-2 d-inline-flex align-items-center gap-2"
               >
                 <i className="bi bi-telephone-fill text-primary"></i>

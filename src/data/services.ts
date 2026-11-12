@@ -57,11 +57,13 @@ export const BUSINESS_INFO = {
   brandTagline: "Services at Doorstep",
   fullBrandName: "A M Hardware & Software Services at Doorstep",
   shortName: "AM",
-  primaryPhone: "7323877289",
+  primaryPhone: "+91 7323 877 289",
+  primaryPhoneTel: "+917323877289",
   secondaryPhone: "9643627724",
   whatsappPrimary: "917323877289",
   whatsappSecondary: "919643627724",
-  email: "ankitkushwaha732387@gmail.com",
+  email: "ankitkushwaha732287@gmail.com",
+  secondaryEmail: "mohit88srivastav@gmail.com",
   serviceAreas: ["Noida", "Ghaziabad", "Vijay Nagar, Ghaziabad"] as const,
   paymentModes: ["UPI", "Cash"] as const,
   timeSlots: [
@@ -395,7 +397,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "Booking & Tracking",
     question: "How does booking work without an online payment or account login?",
     answer:
-      "Fill out the booking form on our Book Service page (or home page). It generates a Ticket Reference (AM-YYYY-XXXXXX) and prepares a structured summary you can send straight to WhatsApp (7323877289) or Email (ankitkushwaha732387@gmail.com) in one click.",
+      "Fill out the booking form on our Book Service page (or home page). It generates a Ticket Reference (AM-YYYY-XXXXXX) and prepares a structured summary you can send straight to WhatsApp (+91 7323 877 289) or Email (ankitkushwaha732287@gmail.com & mohit88srivastav@gmail.com) in one click.",
   },
   {
     id: "faq-5",

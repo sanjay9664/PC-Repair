@@ -6,6 +6,7 @@ import {
   buildMailtoUrl,
   buildStatusInquiryMessage,
   buildWhatsAppUrl,
+  formatProfessionalStatusEmailBody,
   SavedBookingRecord,
 } from "@/utils/inquiry";
 
@@ -49,9 +50,9 @@ export default function AreasAndTrackSection({
       return;
     }
     setTicketError("");
-    const msg = buildStatusInquiryMessage(cleanTicket);
 
     if (channel === "whatsapp") {
+      const msg = buildStatusInquiryMessage(cleanTicket);
       window.open(
         buildWhatsAppUrl(msg, BUSINESS_INFO.whatsappPrimary),
         "_blank",
@@ -59,8 +60,8 @@ export default function AreasAndTrackSection({
       );
     } else {
       window.location.href = buildMailtoUrl(
-        `Status Check for Ticket ${cleanTicket}`,
-        msg
+        `[Status Inquiry] Service Ticket ${cleanTicket}`,
+        formatProfessionalStatusEmailBody(cleanTicket)
       );
     }
   };

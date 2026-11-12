@@ -124,7 +124,7 @@ export default function HeroCarousel({ onQuickSelect }: HeroCarouselProps) {
                         </a>
 
                         <a
-                          href={`tel:${BUSINESS_INFO.primaryPhone}`}
+                          href={`tel:${BUSINESS_INFO.primaryPhoneTel}`}
                           className="btn btn-outline-light fw-bold rounded-3 px-4 py-2 d-inline-flex align-items-center gap-2"
                         >
                           <i className="bi bi-telephone"></i>

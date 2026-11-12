@@ -10,6 +10,8 @@ import {
   buildMailtoUrl,
   buildWhatsAppUrl,
   formatBookingMessage,
+  formatProfessionalEmailBody,
+  formatProfessionalEmailSubject,
   generateTicketId,
   isValidIndianPhone,
   SavedBookingRecord,
@@ -53,10 +55,12 @@ export default function BookingSection({
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string>("");
   const [generatedTicket, setGeneratedTicket] = useState<{
     ticket: string;
-    message: string;
+    whatsappMessage: string;
+    emailBody: string;
     subject: string;
     channel: "whatsapp" | "email";
   } | null>(null);
+  const [previewTab, setPreviewTab] = useState<"email" | "whatsapp">("email");
   const [copied, setCopied] = useState(false);
   const [todayIso, setTodayIso] = useState("");
 
@@ -131,8 +135,17 @@ export default function BookingSection({
     if (!validate()) return;
 
     const ticket = generateTicketId();
-    const message = formatBookingMessage(ticket, values, photoName || undefined);
-    const subject = `Doorstep Service Booking [${ticket}] - ${values.device} (${values.area})`;
+    const whatsappMessage = formatBookingMessage(
+      ticket,
+      values,
+      photoName || undefined
+    );
+    const emailBody = formatProfessionalEmailBody(
+      ticket,
+      values,
+      photoName || undefined
+    );
+    const subject = formatProfessionalEmailSubject(ticket, values);
 
     const record: SavedBookingRecord = {
       ...values,
@@ -142,24 +155,35 @@ export default function BookingSection({
     };
 
     onBookingCreated(record);
-    setGeneratedTicket({ ticket, message, subject, channel });
+    setGeneratedTicket({
+      ticket,
+      whatsappMessage,
+      emailBody,
+      subject,
+      channel,
+    });
+    setPreviewTab(channel);
     setCopied(false);
 
     if (channel === "whatsapp") {
       window.open(
-        buildWhatsAppUrl(message, BUSINESS_INFO.whatsappPrimary),
+        buildWhatsAppUrl(whatsappMessage, BUSINESS_INFO.whatsappPrimary),
         "_blank",
         "noopener,noreferrer"
       );
     } else {
-      window.location.href = buildMailtoUrl(subject, message);
+      window.location.href = buildMailtoUrl(subject, emailBody);
     }
   };
 
   const handleCopy = async () => {
     if (!generatedTicket) return;
+    const textToCopy =
+      previewTab === "email"
+        ? `Subject: ${generatedTicket.subject}\n\n${generatedTicket.emailBody}`
+        : generatedTicket.whatsappMessage;
     try {
-      await navigator.clipboard.writeText(generatedTicket.message);
+      await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
@@ -456,7 +480,7 @@ export default function BookingSection({
                       className="btn btn-am-whatsapp w-100 py-3 d-flex align-items-center justify-content-center gap-2"
                     >
                       <i className="bi bi-whatsapp fs-5"></i>
-                      <span>Send Query via WhatsApp</span>
+                      <span>WhatsApp ({BUSINESS_INFO.primaryPhone})</span>
                     </button>
                   </div>
                   <div className="col-md-6">
@@ -466,9 +490,14 @@ export default function BookingSection({
                       className="btn btn-am-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2"
                     >
                       <i className="bi bi-envelope-fill fs-5"></i>
-                      <span>Send Query via Email</span>
+                      <span>Send Query via Email (Both)</span>
                     </button>
                   </div>
+                </div>
+                <div className="text-center text-secondary small mt-2">
+                  Email query is addressed to both{" "}
+                  <strong>{BUSINESS_INFO.email}</strong> &amp;{" "}
+                  <strong>{BUSINESS_INFO.secondaryEmail}</strong>.
                 </div>
               </form>
 
@@ -487,10 +516,10 @@ export default function BookingSection({
                       <small className="d-block mt-1">
                         Your{" "}
                         {generatedTicket.channel === "whatsapp"
-                          ? "WhatsApp chat"
-                          : "Email draft"}{" "}
-                        has been triggered. You can also use the quick buttons
-                        below if it didn&apos;t open automatically.
+                          ? `WhatsApp message to ${BUSINESS_INFO.primaryPhone}`
+                          : `professional email to ${BUSINESS_INFO.email} & ${BUSINESS_INFO.secondaryEmail}`}{" "}
+                        has been prepared. Use the buttons below anytime to
+                        re-open or copy.
                       </small>
                     </div>
                     <button
@@ -502,14 +531,49 @@ export default function BookingSection({
                     </button>
                   </div>
 
+                  {/* Preview Format Switcher */}
+                  <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                    <div className="btn-group btn-group-sm" role="group">
+                      <button
+                        type="button"
+                        onClick={() => setPreviewTab("email")}
+                        className={`btn ${
+                          previewTab === "email"
+                            ? "btn-primary"
+                            : "btn-outline-secondary"
+                        }`}
+                      >
+                        <i className="bi bi-envelope me-1"></i>Professional Email
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPreviewTab("whatsapp")}
+                        className={`btn ${
+                          previewTab === "whatsapp"
+                            ? "btn-success"
+                            : "btn-outline-secondary"
+                        }`}
+                      >
+                        <i className="bi bi-whatsapp me-1"></i>WhatsApp Format
+                      </button>
+                    </div>
+                    {previewTab === "email" && (
+                      <small className="text-secondary text-truncate">
+                        Subject: <strong>{generatedTicket.subject}</strong>
+                      </small>
+                    )}
+                  </div>
+
                   <pre className="am-ticket-preview p-3 mb-3">
-                    {generatedTicket.message}
+                    {previewTab === "email"
+                      ? generatedTicket.emailBody
+                      : generatedTicket.whatsappMessage}
                   </pre>
 
                   <div className="d-flex flex-wrap gap-2">
                     <a
                       href={buildWhatsAppUrl(
-                        generatedTicket.message,
+                        generatedTicket.whatsappMessage,
                         BUSINESS_INFO.whatsappPrimary
                       )}
                       target="_blank"
@@ -521,27 +585,38 @@ export default function BookingSection({
                     </a>
 
                     <a
-                      href={buildWhatsAppUrl(
-                        generatedTicket.message,
-                        BUSINESS_INFO.whatsappSecondary
+                      href={buildMailtoUrl(
+                        generatedTicket.subject,
+                        generatedTicket.emailBody
                       )}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-outline-success btn-sm px-3 py-2 rounded-3 fw-semibold d-inline-flex align-items-center gap-2"
+                      className="btn btn-am-primary btn-sm px-3 py-2 d-inline-flex align-items-center gap-2"
                     >
-                      <i className="bi bi-whatsapp"></i>
-                      <span>Backup ({BUSINESS_INFO.secondaryPhone})</span>
+                      <i className="bi bi-envelope-fill"></i>
+                      <span>Email Both</span>
                     </a>
 
                     <a
                       href={buildMailtoUrl(
                         generatedTicket.subject,
-                        generatedTicket.message
+                        generatedTicket.emailBody,
+                        BUSINESS_INFO.email
                       )}
-                      className="btn btn-am-primary btn-sm px-3 py-2 d-inline-flex align-items-center gap-2"
+                      className="btn btn-outline-primary btn-sm px-3 py-2 rounded-3 fw-semibold d-inline-flex align-items-center gap-2"
                     >
                       <i className="bi bi-envelope"></i>
-                      <span>Open Email</span>
+                      <span>Ankit ({BUSINESS_INFO.email})</span>
+                    </a>
+
+                    <a
+                      href={buildMailtoUrl(
+                        generatedTicket.subject,
+                        generatedTicket.emailBody,
+                        BUSINESS_INFO.secondaryEmail
+                      )}
+                      className="btn btn-outline-primary btn-sm px-3 py-2 rounded-3 fw-semibold d-inline-flex align-items-center gap-2"
+                    >
+                      <i className="bi bi-envelope"></i>
+                      <span>Mohit ({BUSINESS_INFO.secondaryEmail})</span>
                     </a>
 
                     <button
