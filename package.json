@@ -1,0 +1,25 @@
+{
+  "name": "am-hardware-software-services",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A M Hardware & Software Services at Doorstep — Next.js & Bootstrap 5 frontend with direct WhatsApp and Email booking.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.9",
+    "bootstrap-icons": "^1.13.2",
+    "next": "^16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.8.0"
+  }
+}
